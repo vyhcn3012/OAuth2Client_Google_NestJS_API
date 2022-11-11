@@ -27,6 +27,6 @@ export declare type UserDocument = User & Document;
 export declare class User {
     name: string;
     email: string;
-    image: string;
+    picture: string;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, any>, {}, {}, {}, {}, "type", User>;

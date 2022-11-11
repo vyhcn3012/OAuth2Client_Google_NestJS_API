@@ -13,7 +13,7 @@ export class User {
     email: string;
 
     @Prop({ required: true })
-    image: string;
+    picture: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

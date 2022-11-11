@@ -7,7 +7,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 const config = require("../config/config").getConfig();
 
 @Module({
-    imports: [AuthModule, MongooseModule.forRoot(config.MONGO_URI)],
+    imports: [AuthModule, MongooseModule.forRoot(config.URL_MONGODB)],
     controllers: [AppController],
     providers: [AppService],
 })

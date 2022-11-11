@@ -6,11 +6,14 @@ import {
     Patch,
     Param,
     Delete,
+    Req,
+    UseGuards,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { GetTokenGoogleDto } from "./dto/get-token-google.dto";
 import { OAuth2Client } from "google-auth-library";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
 const config = require("../../config/config").getConfig();
 
 const client = new OAuth2Client(config.GOOGLE_CLIENT_ID);
@@ -29,5 +32,11 @@ export class AuthController {
         const { email, name, picture } = ticket.getPayload();
         const user = new CreateUserDto({ email, name, picture });
         return this.authService.create(user);
+    }
+
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    async getProfile(@Req() req) {
+        return req.user;
     }
 }

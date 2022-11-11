@@ -14,10 +14,33 @@ const common_1 = require("@nestjs/common");
 const auth_entity_1 = require("./entities/auth.entity");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
+const jwt_1 = require("@nestjs/jwt");
 let AuthService = class AuthService {
-    constructor() { }
-    create(createUserDto) {
-        return "This action adds a new user";
+    constructor(jwtService) {
+        this.jwtService = jwtService;
+    }
+    async create(createUserDto) {
+        const user = await this.findByEmail(createUserDto.email);
+        if (user) {
+            const _user = await this.login(user);
+            return _user;
+        }
+        const createdUser = await (await this.model.create(createUserDto)).save();
+        const result = await this.login(createdUser);
+        return result;
+    }
+    async login(user) {
+        const payload = {
+            email: user.email,
+            sub: user._id,
+            name: user.name,
+            picture: user.picture,
+        };
+        const result = { access_token: this.jwtService.sign(payload) };
+        return result;
+    }
+    async findByEmail(email) {
+        return await this.model.findOne({ email });
     }
 };
 __decorate([
@@ -26,7 +49,7 @@ __decorate([
 ], AuthService.prototype, "model", void 0);
 AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [jwt_1.JwtService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

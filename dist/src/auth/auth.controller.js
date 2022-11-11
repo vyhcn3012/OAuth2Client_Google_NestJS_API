@@ -18,6 +18,7 @@ const auth_service_1 = require("./auth.service");
 const get_token_google_dto_1 = require("./dto/get-token-google.dto");
 const google_auth_library_1 = require("google-auth-library");
 const create_user_dto_1 = require("./dto/create-user.dto");
+const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const config = require("../../config/config").getConfig();
 const client = new google_auth_library_1.OAuth2Client(config.GOOGLE_CLIENT_ID);
 let AuthController = class AuthController {
@@ -33,6 +34,9 @@ let AuthController = class AuthController {
         const user = new create_user_dto_1.CreateUserDto({ email, name, picture });
         return this.authService.create(user);
     }
+    async getProfile(req) {
+        return req.user;
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -41,6 +45,14 @@ __decorate([
     __metadata("design:paramtypes", [get_token_google_dto_1.GetTokenGoogleDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getProfile", null);
 AuthController = __decorate([
     (0, common_1.Controller)("api/auth"),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
